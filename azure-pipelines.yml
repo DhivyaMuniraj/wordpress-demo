@@ -8,6 +8,9 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+  
+variables:
+  artifactName: 'myArtifact'
 
 stages:
   - stage: Build
@@ -41,15 +44,15 @@ stages:
             displayName: 'npm install and build'
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+              rootFolderOrFile: '$(Build.SourcesDirectory)'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(System.DefaultWorkingDirectory)/build$(Build.BuildId).zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(artifactName).zip'
               replaceExistingArchive: true
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(System.DefaultWorkingDirectory)/build$(Build.BuildId).zip'
-              ArtifactName: 'drop'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(artifactName).zip'
+              ArtifactName: '$(artifactName)'
               publishLocation: 'Container'
 
   - stage: Deploy
@@ -58,17 +61,10 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
-          - task: DownloadBuildArtifacts@1
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'drop'
-              itemPattern: '**/*.zip'
-              downloadPath: '$(System.ArtifactsDirectory)'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'Sample'
               appType: 'webAppLinux'
               appName: $(appName)
               resourceGroupName: $(resourceGroup)
-              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+              package: '$(Build.ArtifactStagingDirectory)/$(artifactName).zip'
