@@ -41,10 +41,10 @@ stages:
             displayName: 'npm install and build'
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: '${Build.SourcesDirectory}'
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/wordpress.zip'
               replaceExistingArchive: true
           - task: PublishBuildArtifacts@1
             inputs:
@@ -66,4 +66,4 @@ stages:
               appType: 'webAppLinux'
               appName: $(appName)
               resourceGroupName: $(resourceGroup)
-              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+              package: '$(Build.ArtifactStagingDirectory)/wordpress.zip'
