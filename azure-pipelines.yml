@@ -71,6 +71,6 @@ stages:
             inputs:
               azureSubscription: 'Sample'
               appType: 'webAppLinux'
-              appName: $(appName)
-              resourceGroupName: $(resourceGroup)
+              appName: wordpressdem
+              resourceGroupName: rsne-demo
               package: '$(Build.ArtifactStagingDirectory)/$(artifactName)/$(artifactName).zip'
