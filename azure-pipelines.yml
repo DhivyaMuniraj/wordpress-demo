@@ -62,7 +62,7 @@ stages:
             inputs:
               buildType: 'current'
               downloadType: 'single'
-              artifactName: 'wordpress'
+              artifactName: 'drop'
               itemPattern: '**/*.zip'
               downloadPath: '$(System.ArtifactsDirectory)'
           - task: AzureWebApp@1
