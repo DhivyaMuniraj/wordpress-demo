@@ -44,11 +44,11 @@ stages:
               rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/wordpress.zip'
+              archiveFile: '$(System.DefaultWorkingDirectory)/wordpress.zip'
               replaceExistingArchive: true
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              PathtoPublish: '$(System.DefaultWorkingDirectory)/wordpress.zip'
               ArtifactName: 'drop'
               publishLocation: 'Container'
 
@@ -58,10 +58,17 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'wordpress'
+              itemPattern: '**/*.zip'
+              downloadPath: '$(System.ArtifactsDirectory)'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'Sample'
               appType: 'webAppLinux'
               appName: $(appName)
               resourceGroupName: $(resourceGroup)
-              package: '$(Build.ArtifactStagingDirectory)/*.zip'
+              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
