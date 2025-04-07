@@ -58,12 +58,10 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
-          - download: current
-            artifact: 'drop'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'Sample'
               appType: 'webAppLinux'
               appName: $(appName)
               resourceGroupName: $(resourceGroup)
-              package: '$(Build.ArtifactStagingDirectory)/wordpress.zip'
+              package: '$(Build.ArtifactStagingDirectory)/*.zip'
