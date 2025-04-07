@@ -44,11 +44,11 @@ stages:
               rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(System.DefaultWorkingDirectory)/wordpress.zip'
+              archiveFile: '$(System.DefaultWorkingDirectory)/build$(Build.BuildId).zip'
               replaceExistingArchive: true
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(System.DefaultWorkingDirectory)/wordpress.zip'
+              PathtoPublish: '$(System.DefaultWorkingDirectory)/build$(Build.BuildId).zip'
               ArtifactName: 'drop'
               publishLocation: 'Container'
 
