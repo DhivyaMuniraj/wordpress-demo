@@ -73,4 +73,4 @@ stages:
               appType: 'webAppLinux'
               appName: $(appName)
               resourceGroupName: $(resourceGroup)
-              package: '$(Build.ArtifactStagingDirectory)/$(artifactName).zip'
+              package: '$(Build.ArtifactStagingDirectory)/$(artifactName)/$(artifactName).zip'
