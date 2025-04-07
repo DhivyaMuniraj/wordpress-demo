@@ -62,8 +62,8 @@ stages:
             artifact: 'drop'
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: '$(azureSubscription)'
+              azureSubscription: 'Sample'
               appType: 'webAppLinux'
-              appName: '$(appName)'
-              resourceGroupName: '$(resourceGroup)'
+              appName: $(appName)
+              resourceGroupName: $(resourceGroup)
               package: '$(Build.ArtifactStagingDirectory)/drop.zip'
