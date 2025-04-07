@@ -61,6 +61,12 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: '$(artifactName)'
+              downloadPath: '$(Build.ArtifactStagingDirectory)'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'Sample'
