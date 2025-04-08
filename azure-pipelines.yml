@@ -19,7 +19,7 @@ stages:
           - powershell: |
                  
                   # Return $true if Files/ path is in the list of changed files, otherwise $false
-                  $changedFiles = $(Build.SourcesDirectory)/wp-content
+                  # $changedFiles = $(Build.SourcesDirectory)/wp-content
                   $changesDetected = git diff --name-only HEAD^ HEAD wp-content/
                   if ($changesDetected) {
                     Write-Host "Changes detected in wp-content"
