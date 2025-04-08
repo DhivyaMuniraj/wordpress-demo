@@ -26,11 +26,11 @@ stages:
                 filesChanged=false
                 echo "No changes in wp-content/."
               fi
-          # - task: NodeTool@0
-          #   condition: eq(variables.filesChanged, 'True')
-          #   inputs:
-          #     versionSource: 'spec'
-          #     versionSpec: '20.x'
+          - task: NodeTool@0
+            condition: eq(variables.filesChanged, 'True')
+            inputs:
+              versionSource: 'spec'
+              versionSpec: '20.x'
   #         - task: ArchiveFiles@2
   #           inputs:
   #             rootFolderOrFile: '$(Build.SourcesDirectory)'
