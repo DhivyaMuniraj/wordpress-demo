@@ -15,12 +15,24 @@ stages:
       - job: "Detect"
         steps:
           - checkout: self
+          - task: PowerShell@2
+            displayName: 'Detect changes in wp-content'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $changedFiles = git diff --name-only origin/main...HEAD
+                Write-Host "Changed files:`n$changedFiles"
+
+                if ($changedFiles -match "^wp-content/") {
+                    Write-Host "##vso[task.setvariable variable=WpContentChanged]true"
+                } else {
+                    Write-Host "##vso[task.setvariable variable=WpContentChanged]false"
+                }
           - task: NodeTool@0
             inputs:
               versionSpec: '20.x'
             displayName: 'Install Node.js'
-            condition: |
-              contains(variables['Build.ChangedFiles'], 'wp-content/')
+            condition: eq(variables['WpContentChanged'], 'true')
           - script: |
               cd wp-content/themes/RSNE
               npm install
