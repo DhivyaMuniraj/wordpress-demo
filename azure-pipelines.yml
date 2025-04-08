@@ -15,31 +15,14 @@ stages:
       - job: "Detect"
         steps:
           - checkout: self
-          - script: |
-              git diff --name-status HEAD HEAD^ 
-            displayName: 'check changes'
-          - task: PowerShell@2
-            displayName: 'Detect changes in wp-content'
-            inputs:
-              targetType: 'inline'
-              script: |
-               
-                # Return $true if Files/ path is in the list of changed files, otherwise $false
-                $filesChanged = "$(Build.SourcesDirectory)/wp-content"
-                Write-Host "changed-files-wp-content:`n$filesChanged"
-                # # Fetch full history of current branch for usage in git diff
-                # git fetch origin $(git rev-parse HEAD) --unshallow
-                # git fetch origin main
+          - powershell: |
+                  #Get any changed files
+                  $changedFiles = git diff --name-status HEAD HEAD^ 
+                  
+                  # Return $true if Files/ path is in the list of changed files, otherwise $false
+                  $filesChanged = ((Select-String -InputObject $changedFiles -Pattern "wp-content/" -AllMatches).Matches.Count -gt 0)
+                  Write-Host "Chnaged file `n$filesChanged"
 
-                # # Get a list of files changed by this branch compared to origin/main
-                # $changedFiles = git diff origin/main...HEAD --name-only
-                #     Write-Host "Changed files:`n$changedFiles"
-
-                # if ($changedFiles -match "^wp-content/") {
-                #     Write-Host "##vso[task.setvariable variable=WpContentChanged]true"
-                # } else {
-                #     Write-Host "##vso[task.setvariable variable=WpContentChanged]false"
-                # }
           - task: NodeTool@0
             inputs:
               versionSpec: '20.x'
