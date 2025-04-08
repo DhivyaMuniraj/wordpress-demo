@@ -18,6 +18,7 @@ stages:
             fetchDepth: 0
           - script: |
               git diff --name-only origin/main...HEAD > changed.txt
+              cat changed.txt
               if grep -q '^wp-content/' changed.txt; then
                 echo "wp-content was changed"
               else
