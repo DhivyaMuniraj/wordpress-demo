@@ -14,7 +14,6 @@ stages:
     jobs:
       - job: "Detect"
         steps:
-          - checkout: self
           - powershell: |
                   #Get any changed files
                   $changedFiles = git diff --name-status HEAD HEAD^ 
