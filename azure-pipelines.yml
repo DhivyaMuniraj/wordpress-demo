@@ -67,10 +67,16 @@ stages:
               downloadType: 'single'
               artifactName: '$(artifactName)'
               downloadPath: '$(System.ArtifactsDirectory)'
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
+              destinationFolder: '$(System.DefaultWorkingDirectory)/'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: false
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'Sample'
               appType: 'webAppLinux'
               appName: wordpressdem
               resourceGroupName: rsne-demo
-              package: '$(System.ArtifactsDirectory)/drop/*.zip'
+              package: '$(System.DefaultWorkingDirectory)'
