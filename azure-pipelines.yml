@@ -36,9 +36,7 @@ stages:
           - script: |
               cd wp-content/themes/RSNE
               npm install
-              npm run build
-
-            displayName: 'npm install and build'
+              npm run build  
   #         - task: ArchiveFiles@2
   #           inputs:
   #             rootFolderOrFile: '$(Build.SourcesDirectory)'
