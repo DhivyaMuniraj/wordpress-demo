@@ -42,18 +42,17 @@ stages:
               npm run build
             condition: eq(variables['wpContentChanged'], 'true')
             displayName: 'npm install and build'
-
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-              includeRootFolder: false
+              rootFolderOrFile: '$(Build.SourcesDirectory)'
+              includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/drop.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               replaceExistingArchive: true
-
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop.zip'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: '$(artifactName)'
               publishLocation: 'Container'
 
   - stage: Deploy
@@ -70,7 +69,7 @@ stages:
               downloadPath: '$(System.ArtifactsDirectory)'
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop.zip'
+              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
               destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
               cleanDestinationFolder: true
               overwriteExistingFiles: false
