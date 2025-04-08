@@ -21,7 +21,7 @@ stages:
               targetType: 'inline'
               script: |
                 git fetch origin main
-                $changedFiles = git diff --name-only origin/main HEAD
+                $changedFiles = git diff --name-only HEAD^ HEAD
                 Write-Host "Changed files:`n$changedFiles"
 
                 if ($changedFiles -match "^wp-content/") {
