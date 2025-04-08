@@ -37,6 +37,7 @@ stages:
               versionSource: 'spec'
               versionSpec: '20.x'
           - script: |
+                  echo "$themeDirectory"
                   cd $themeDirectory
                   npm install
                   npm run build
