@@ -62,16 +62,16 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
-          # - task: DownloadBuildArtifacts@0
-          #   inputs:
-          #     buildType: 'current'
-          #     downloadType: 'single'
-          #     artifactName: '$(artifactName)'
-          #     downloadPath: '$(System.ArtifactsDirectory)'
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: '$(artifactName)'
+              downloadPath: '$(System.ArtifactsDirectory)'
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(System.DefaultWorkingDirectory)/sample/drop.zip'
-              destinationFolder: '$(System.DefaultWorkingDirectory)/sample/extracted'
+              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop.zip'
+              destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
               cleanDestinationFolder: true
               overwriteExistingFiles: false
           - task: AzureWebApp@1
@@ -80,4 +80,4 @@ stages:
               appType: 'webAppLinux'
               appName: wordpressdem
               resourceGroupName: rsne-demo
-              package: '$(System.DefaultWorkingDirectory)/sample/extracted'
+              package: '$(System.DefaultWorkingDirectory)/extracted'
