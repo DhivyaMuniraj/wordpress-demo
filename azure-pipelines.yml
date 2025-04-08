@@ -14,12 +14,17 @@ stages:
     jobs:
       - job: "Detect"
         steps:
+          - script: |
+                git diff --name-only HEAD^ HEAD wp-content/
           - powershell: |
-                  #Get any changed files
-                  $changedFiles = git diff --name-status HEAD HEAD^ 
-                  
+                 
                   # Return $true if Files/ path is in the list of changed files, otherwise $false
-                  $filesChanged = ((Select-String -InputObject $changedFiles -Pattern "wp-content/" -AllMatches).Matches.Count -gt 0)
+                  $changedFiles = $(Build.SourcesDirectory)/wp-content
+                  $changesDetected = git diff --name-only HEAD^ HEAD wp-content/
+                  if ($changesDetected) {
+                    Write-Host "Changes detected in wp-content"
+                    Write-Host "##vso[task.setvariable variable=wpContentChanged;]true"  # Set variable to true
+                  }
                   Write-Host "Chnaged file `n$filesChanged"
 
           - task: NodeTool@0
