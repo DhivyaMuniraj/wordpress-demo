@@ -13,7 +13,10 @@ stages:
   - stage: Build
     jobs:
       - job: "Detect"
+        
         steps:
+          - checkout: self
+            fetchDepth: 0
           - script: |
                 git diff --name-only HEAD^ HEAD wp-content/
           - powershell: |
