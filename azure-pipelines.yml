@@ -21,7 +21,8 @@ stages:
               targetType: 'inline'
               script: |
                 #Get any changed files
-                $changedFiles = git diff --name-status HEAD^ HEAD 
+                git fetch origin main
+                $changedFiles = git diff --name-status HEAD HEAD^
                  Write-Host "changed-files:`n$changedFiles"
                 
                 # Return $true if Files/ path is in the list of changed files, otherwise $false
