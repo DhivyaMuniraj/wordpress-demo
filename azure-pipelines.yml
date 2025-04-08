@@ -20,18 +20,18 @@ stages:
               git fetch origin
               changedFiles=$(git diff --name-status origin/main...HEAD)
               echo "$changedFiles"
-              if echo "$changedFiles" | grep -q "wp-content/"; then
-                filesChanged=true
-                echo "Files in wp-content/ have been changed."
-              else
-                filesChanged=false
-                echo "No changes in wp-content/."
-              fi
-          - task: NodeTool@0
-            condition: eq(variables.filesChanged, 'True')
-            inputs:
-              versionSource: 'spec'
-              versionSpec: '20.x'
+              # if echo "$changedFiles" | grep -q "wp-content/"; then
+              #   filesChanged=true
+              #   echo "Files in wp-content/ have been changed."
+              # else
+              #   filesChanged=false
+              #   echo "No changes in wp-content/."
+              # fi
+          # - task: NodeTool@0
+          #   condition: eq(variables.filesChanged, 'True')
+          #   inputs:
+          #     versionSource: 'spec'
+          #     versionSpec: '20.x'
   #         - task: ArchiveFiles@2
   #           inputs:
   #             rootFolderOrFile: '$(Build.SourcesDirectory)'
