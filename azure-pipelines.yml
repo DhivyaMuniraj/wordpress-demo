@@ -16,7 +16,7 @@ stages:
         steps:
           - checkout: self
           - script: |
-              git diff --name-only HEAD^ HEAD wp-content/
+              git diff --name-status HEAD HEAD^ 
             displayName: 'check changes'
           - task: PowerShell@2
             displayName: 'Detect changes in wp-content'
