@@ -14,27 +14,26 @@ stages:
         steps:
           - checkout: self
           - script: |
-              echo "Checking for changes in wp-content..."
-              git fetch origin main
-              $files = git diff HEAD HEAD~ --name-only
-              $temp = $files -split ' '
-              $count = $temp.Length
-              echo "Total changed files: $count"
-              
-              $wpContentChanged = $false  # Initialize the variable
+                echo "Checking for changes in wp-content..."
+                    git fetch origin main
+                    files=$(git diff --name-only origin/main HEAD)
+                    count=$(echo "$files" | wc -l)
+                    echo "Total changed files: $count"
+                    
+                    wpContentChanged=false  # Initialize the variable
 
-              For ($i = 0; $i -lt $temp.Length; $i++) {
-                  $name = $temp[$i]
-                  echo "This is $name file"
-                  if ($name -like "wp-content/themes/RSNE/*") {
-                      Write-Host "##vso[task.setvariable variable=wpContentChanged]True"
-                      $wpContentChanged = $true  # Set the flag to true
-                  }
-              }
+                    while IFS= read -r name; do
+                        echo "This is $name file"
+                        if [[ "$name" == wp-content/themes/RSNE/* ]]; then
+                            echo "##vso[task.setvariable variable=wpContentChanged]True"
+                            wpContentChanged=true  # Set the flag to true
+                            break  # Exit the loop if a change is found
+                        fi
+                    done <<< "$files"
 
-              if (-not $wpContentChanged) {
-                  Write-Host "##vso[task.setvariable variable=wpContentChanged]False"
-              }
+                    if [ "$wpContentChanged" = false ]; then
+                        echo "##vso[task.setvariable variable=wpContentChanged]False"
+                    fi
 
 
             displayName: "Detect wp-content Changes"
