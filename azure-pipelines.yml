@@ -27,7 +27,7 @@ stages:
                 
                 # Return $true if Files/ path is in the list of changed files, otherwise $false
                 $filesChanged = ((Select-String -InputObject $changedFiles -Pattern "wp-content/" -AllMatches).Matches.Count -gt 0)
-                Write-Host "changed-files:`n$filesChanged"
+                Write-Host "changed-files-wp-content:`n$filesChanged"
                 # # Fetch full history of current branch for usage in git diff
                 # git fetch origin $(git rev-parse HEAD) --unshallow
                 # git fetch origin main
