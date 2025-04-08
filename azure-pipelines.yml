@@ -22,7 +22,7 @@ stages:
               script: |
                 #Get any changed files
                 git fetch origin main
-                $changedFiles = git diff origin/main...HEAD
+                $changedFiles = git diff --name-only main...main@{1} -- wp-content/
                  Write-Host "changed-files:`n$changedFiles"
                 
                 # Return $true if Files/ path is in the list of changed files, otherwise $false
