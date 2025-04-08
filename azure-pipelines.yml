@@ -70,8 +70,8 @@ stages:
           #     downloadPath: '$(System.ArtifactsDirectory)'
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(System.DefaultWorkingDirectory)/drop.zip'
-              destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
+              archiveFilePatterns: '$(System.DefaultWorkingDirectory)/drop/drop.zip'
+              destinationFolder: '$(System.DefaultWorkingDirectory)/drop/extracted'
               cleanDestinationFolder: true
               overwriteExistingFiles: false
           - task: AzureWebApp@1
@@ -80,4 +80,4 @@ stages:
               appType: 'webAppLinux'
               appName: wordpressdem
               resourceGroupName: rsne-demo
-              package: '$(System.DefaultWorkingDirectory)/extracted'
+              package: '$(System.DefaultWorkingDirectory)/drop/extracted'
