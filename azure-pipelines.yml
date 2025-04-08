@@ -1,8 +1,3 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
 - main
 
@@ -61,18 +56,16 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: '$(artifactName)'
-              downloadPath: '$(System.ArtifactsDirectory)'
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
+              archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
               cleanDestinationFolder: true
               overwriteExistingFiles: false
+          - script: |
+              mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
+              rmdir $(System.DefaultWorkingDirectory)/extracted/s
+            displayName: 'Move files from "s" folder'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'Sample'
