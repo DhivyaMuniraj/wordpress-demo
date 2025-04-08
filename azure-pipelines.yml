@@ -20,9 +20,13 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
+                # Fetch full history of current branch for usage in git diff
+                git fetch origin $(git rev-parse HEAD) --unshallow
                 git fetch origin main
-                $changedFiles = git diff --name-only HEAD~ HEAD
-                Write-Host "Changed files:`n$changedFiles"
+
+                # Get a list of files changed by this branch compared to origin/main
+                $changedFiles = git diff origin/main...HEAD --name-only
+                    Write-Host "Changed files:`n$changedFiles"
 
                 if ($changedFiles -match "^wp-content/") {
                     Write-Host "##vso[task.setvariable variable=WpContentChanged]true"
