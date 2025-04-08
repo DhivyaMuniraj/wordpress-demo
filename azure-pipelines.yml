@@ -22,6 +22,9 @@ stages:
 
               # Loop through folders and check if any files inside them changed
               for folder in "${folders[@]}"; do
+              echo "checking for chnages in folder"
+              changes=$(git diff --name-only origin/main HEAD | grep "^$folder/")
+              echo "$changes"
                   if git diff --name-only origin/main HEAD | grep -q "^$folder/"; then
                       echo "Changes detected in $folder."
                       changed=true
