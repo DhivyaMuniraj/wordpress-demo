@@ -21,7 +21,6 @@ stages:
               targetType: 'inline'
               script: |
                 #Get any changed files
-                git fetch origin main
                  $changedFiles = git diff --name-status HEAD HEAD^ 
                  Write-Host "changed-files:`n$changedFiles"
                 
