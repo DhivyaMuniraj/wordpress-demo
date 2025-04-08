@@ -21,7 +21,7 @@ stages:
               git fetch origin main
 
               # Check if *any file outside* the monitored folders has changed
-              if git diff --name-only origin/main HEAD | grep -vE "^($(IFS='|'; echo "${folders[*]}"))/" | grep -q .; then
+              if git diff --name-only origin/main HEAD | grep -q "^$folder/"; then
                   echo "Changes detected outside monitored folders."
                   changed=false
               else
