@@ -15,19 +15,25 @@ stages:
           - checkout: self
           - script: |
               folders=("wp-content")
-              changed=false
-              for folder in "${folders[@]}"; do
-                  if git diff --name-only origin/main HEAD | grep -v "^$folder/" | grep -q .; then
-                      echo "Changes detected in $folder."
-                      changed=true
-                  fi
-              done
+              changed=true
 
+              # Make sure we have the latest info about origin/main
+              git fetch origin main
+
+              # Check if *any file outside* the monitored folders has changed
+              if git diff --name-only origin/main HEAD | grep -vE "^($(IFS='|'; echo "${folders[*]}"))/" | grep -q .; then
+                  echo "Changes detected outside monitored folders."
+                  changed=false
+              else
+                  echo "All changes are within monitored folders."
+              fi
+
+              # Decision based on folder changes
               if [ "$changed" = true ]; then
-                  echo "Changes detected. Proceeding with triggering Azure Pipeline."
+                  echo "Proceeding with triggering Azure Pipeline."
                   # Trigger your pipeline here
               else
-                  echo "No changes detected in monitored folders."
+                  echo "No changes detected in monitored folders. Skipping pipeline trigger."
               fi
 
 
