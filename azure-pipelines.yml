@@ -24,6 +24,9 @@ stages:
               # Return $true if Files/ path is in the list of changed files, otherwise $false
               $filesChanged = ((Select-String -InputObject $changedFiles -Pattern "wp-content/" -AllMatches).Matches.Count -gt 0)
               Write-Host "Changed files:`n$filesChanged"
+              if ($filesChanged){
+                Write-Host "##vso["task.setvariable variable=WpContentChanged]true"
+              }
           - task: NodeTool@0
             inputs:
               versionSpec: '20.x'
