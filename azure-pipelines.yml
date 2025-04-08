@@ -17,7 +17,7 @@ stages:
           - checkout: self
             fetchDepth: 0
           - script: |
-              changedFiles=$(git diff --name-status HEAD HEAD^)
+              changedFiles=$(git diff --name-status origin/main...HEAD)
               echo "changedfiles"
               if echo "$changedFiles" | grep -q "wp-content/"; then
                 filesChanged=true
