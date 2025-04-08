@@ -10,7 +10,7 @@ pool:
   vmImage: ubuntu-latest
   
 variables:
-  artifactName: 'myArtifact'
+  artifactName: 'drop'
 
 stages:
   - stage: Build
@@ -51,8 +51,8 @@ stages:
               replaceExistingArchive: true
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-              # ArtifactName: '$(artifactName)'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: '$(artifactName)'
               publishLocation: 'Container'
 
   - stage: Deploy
@@ -61,16 +61,16 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
-          # - task: DownloadBuildArtifacts@0
-          #   inputs:
-          #     buildType: 'current'
-          #     downloadType: 'single'
-          #     artifactName: '$(artifactName)'
-          #     downloadPath: '$(Build.ArtifactStagingDirectory)'
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: '$(artifactName)'
+              downloadPath: '$(System.ArtifactsDirectory)'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'Sample'
               appType: 'webAppLinux'
               appName: wordpressdem
               resourceGroupName: rsne-demo
-              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+              package: '$(System.ArtifactsDirectory)/drop/*.zip'
