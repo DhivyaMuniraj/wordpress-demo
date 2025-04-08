@@ -47,11 +47,11 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(artifactName).zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               replaceExistingArchive: true
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(artifactName).zip'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               ArtifactName: '$(artifactName)'
               publishLocation: 'Container'
 
@@ -61,16 +61,16 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: '$(artifactName)'
-              downloadPath: '$(Build.ArtifactStagingDirectory)'
+          # - task: DownloadBuildArtifacts@0
+          #   inputs:
+          #     buildType: 'current'
+          #     downloadType: 'single'
+          #     artifactName: '$(artifactName)'
+          #     downloadPath: '$(Build.ArtifactStagingDirectory)'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'Sample'
               appType: 'webAppLinux'
               appName: wordpressdem
               resourceGroupName: rsne-demo
-              package: '$(Build.ArtifactStagingDirectory)/$(artifactName)/$(artifactName).zip'
+              package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
