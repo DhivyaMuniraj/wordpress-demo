@@ -1,3 +1,4 @@
+
 trigger:
   branches:
     include:
@@ -19,14 +20,17 @@ stages:
           - script: |
               git fetch origin
               changedFiles=$(git diff --name-status origin/main...HEAD)
-              echo "changedfiles"
+
+              # Echo the changed files (optional, for debugging)
+              echo "$changedFiles"
+
+              # Check if wp-content has any changes
               if echo "$changedFiles" | grep -q "wp-content/"; then
-                filesChanged=true
+                echo "##vso[task.setvariable variable=filesChanged;isOutput=true]true"
                 echo "Files in wp-content/ have been changed."
               else
-                filesChanged=false
+                echo "##vso[task.setvariable variable=filesChanged;isOutput=true]false"
                 echo "No changes in wp-content/."
-              fi
           - task: NodeTool@0
             condition: eq(variables.filesChanged, 'True')
             inputs:
