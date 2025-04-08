@@ -19,7 +19,7 @@ stages:
           - script: |
               git fetch origin
               changedFiles=$(git diff --name-status origin/main...HEAD)
-              echo "changedfiles"
+              echo "$changedFiles"
               if echo "$changedFiles" | grep -q "wp-content/"; then
                 filesChanged=true
                 echo "Files in wp-content/ have been changed."
