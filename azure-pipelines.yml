@@ -16,16 +16,17 @@ stages:
           - script: |
               echo "Checking for changes in wp-content..."
               git fetch origin main
-              $editedFiles = git diff HEAD HEAD~ --name-only
-              $editedFiles | ForEach-Object {
-                  Switch -Wildcard ($_ ) {
-                      'SubFolderA/*' {
-                          Write-Output "##vso[task.setvariable variable=MicroserviceA]True"
-                      }
-                      'wp-content/themes/RSNE/*' {
-                          Write-Output "##vso[task.setvariable variable=wpContentChanged]True"
-                      }
-                      # Add more patterns here if needed
+              $files=$(git diff HEAD HEAD~ --name-only)
+              $temp=$files -split ' '
+              $count=$temp.Length
+              echo "Total changed $count files"
+              For ($i=0; $i -lt $temp.Length; $i++)
+              {
+                $name=$temp[$i]
+                echo "this is $name file"
+                if ($name -like "wp-content/themes/RSNE/*")
+                  {
+                    Write-Host "##vso[task.setvariable variable=wpContentChanged]True"
                   }
               }
             displayName: "Detect wp-content Changes"
