@@ -29,14 +29,10 @@ stages:
               #     Write-Host "##vso[task.setvariable variable=WpContentChanged;]true"  # Set variable to true if wp-content was changed
               # }
           - task: NodeTool@0
-            inputs:
-              versionSpec: '20.x'
-            displayName: 'Install Node.js'
             condition: eq(variables.filesChanged, 'True')
-          - script: |
-              cd wp-content/themes/RSNE
-              npm install
-              npm run build  
+            inputs:
+              versionSource: 'spec'
+              versionSpec: '20.x'
   #         - task: ArchiveFiles@2
   #           inputs:
   #             rootFolderOrFile: '$(Build.SourcesDirectory)'
