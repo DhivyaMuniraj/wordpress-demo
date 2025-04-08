@@ -24,14 +24,15 @@ stages:
               # Return $true if Files/ path is in the list of changed files, otherwise $false
               $filesChanged = ((Select-String -InputObject $changedFiles -Pattern "wp-content/" -AllMatches).Matches.Count -gt 0)
               Write-Host "Changed files:`n$filesChanged"
-              if ($filesChanged) {
-                  Write-Host "##vso[task.setvariable variable=WpContentChanged;]true"  # Set variable to true if wp-content was changed
-              }
+              Write-Host "##vso[task.setvariable variable=FilesChanged;isOutput=true;]$filesChanged"
+              # if ($filesChanged) {
+              #     Write-Host "##vso[task.setvariable variable=WpContentChanged;]true"  # Set variable to true if wp-content was changed
+              # }
           - task: NodeTool@0
             inputs:
               versionSpec: '20.x'
             displayName: 'Install Node.js'
-            condition: eq(variables['WpContentChanged'], 'true')
+            condition: eq(variables.filesChanged, 'True')
           - script: |
               cd wp-content/themes/RSNE
               npm install
