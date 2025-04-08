@@ -22,13 +22,13 @@ stages:
             inputs:
               versionSpec: '20.x'
             displayName: 'Install Node.js'
-
+            condition: |
+              contains(variables['Build.ChangedFiles'], 'wp-content/')
           - script: |
               cd wp-content/themes/RSNE
               npm install
               npm run build
-            condition: |
-              contains(variables['Build.ChangedFiles'], 'wp-content/')
+
             displayName: 'npm install and build'
   #         - task: ArchiveFiles@2
   #           inputs:
