@@ -20,13 +20,13 @@ stages:
               git fetch --all
               changedFiles=$(git diff --name-status HEAD^ HEAD)
               echo "$changedFiles"
-              # if echo "$changedFiles" | grep -q "wp-content/"; then
-              #   filesChanged=true
-              #   echo "Files in wp-content/ have been changed."
-              # else
-              #   filesChanged=false
-              #   echo "No changes in wp-content/."
-              # fi
+              if echo "$changedFiles" | grep -q "wp-content/"; then
+                filesChanged=true
+                echo "Files in wp-content/ have been changed."
+              else
+                filesChanged=false
+                echo "No changes in wp-content/."
+              fi
           # - task: NodeTool@0
           #   condition: eq(variables.filesChanged, 'True')
           #   inputs:
