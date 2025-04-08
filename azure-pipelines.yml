@@ -25,7 +25,7 @@ stages:
               $filesChanged = ((Select-String -InputObject $changedFiles -Pattern "wp-content/" -AllMatches).Matches.Count -gt 0)
               Write-Host "Changed files:`n$filesChanged"
               if ($filesChanged){
-                Write-Host "##vso["task.setvariable variable=WpContentChanged]true"
+                Write-Host "##vso["task.setvariable variable=WpContentChanged;]true"
               }
           - task: NodeTool@0
             inputs:
