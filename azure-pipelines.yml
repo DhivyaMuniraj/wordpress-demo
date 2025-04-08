@@ -20,19 +20,26 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                # Fetch full history of current branch for usage in git diff
-                git fetch origin $(git rev-parse HEAD) --unshallow
-                git fetch origin main
+                #Get any changed files
+                $changedFiles = git diff --name-status HEAD HEAD^ 
+                 Write-Host "changed-files:`n$changedFiles"
+                
+                # Return $true if Files/ path is in the list of changed files, otherwise $false
+                $filesChanged = ((Select-String -InputObject $changedFiles -Pattern "wp-content/" -AllMatches).Matches.Count -gt 0)
+                Write-Host "changed-files:`n$filesChanged"
+                # # Fetch full history of current branch for usage in git diff
+                # git fetch origin $(git rev-parse HEAD) --unshallow
+                # git fetch origin main
 
-                # Get a list of files changed by this branch compared to origin/main
-                $changedFiles = git diff origin/main...HEAD --name-only
-                    Write-Host "Changed files:`n$changedFiles"
+                # # Get a list of files changed by this branch compared to origin/main
+                # $changedFiles = git diff origin/main...HEAD --name-only
+                #     Write-Host "Changed files:`n$changedFiles"
 
-                if ($changedFiles -match "^wp-content/") {
-                    Write-Host "##vso[task.setvariable variable=WpContentChanged]true"
-                } else {
-                    Write-Host "##vso[task.setvariable variable=WpContentChanged]false"
-                }
+                # if ($changedFiles -match "^wp-content/") {
+                #     Write-Host "##vso[task.setvariable variable=WpContentChanged]true"
+                # } else {
+                #     Write-Host "##vso[task.setvariable variable=WpContentChanged]false"
+                # }
           - task: NodeTool@0
             inputs:
               versionSpec: '20.x'
