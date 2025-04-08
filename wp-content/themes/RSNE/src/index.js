@@ -1,2 +1,2 @@
 import "../css/style.scss"
-// hellooooooooooooooooooooooo00oooooooo00
+// hellooooooooooooooooooooooo00oooooooo000
