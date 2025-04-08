@@ -19,7 +19,8 @@ stages:
             fetchDepth: 0
           - script: |
               git diff --name-only origin/main...HEAD > changed.txt
-              vi changed.txt
+              if grep -q '^wp-content/' changed.txt; then
+                echo "wp-content was changed"
           # - task: NodeTool@0
           #   condition: eq(variables.filesChanged, 'True')
           #   inputs:
