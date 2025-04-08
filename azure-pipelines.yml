@@ -20,11 +20,11 @@ stages:
               changedFiles=$(git diff --name-status HEAD^ HEAD)
               echo "$changedFiles"
               if echo "$changedFiles" | grep -q "wp-content/themes/RSNE"; then
-                echo "##vso[task.setvariable variable=runNodeTask;isOutput=true]true"
+                echo "##vso[task.setvariable variable=runNodeTask]true"
                 echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/RSNE"                
                 echo "Files in wp-content/themes/sample have been changed."
               elif echo "$changedFiles" | grep -q "wp-content/themes/example"; then
-                echo "##vso[task.setvariable variable=runNodeTask;isOutput=true]true"
+                echo "##vso[task.setvariable variable=runNodeTask]true"
                 echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/example"
                 echo "Files in wp-content/themes/example have been changed."
               else
