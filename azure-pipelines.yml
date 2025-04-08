@@ -42,17 +42,18 @@ stages:
               npm run build
             condition: eq(variables['wpContentChanged'], 'true')
             displayName: 'npm install and build'
+
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)'
-              includeRootFolder: true
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+              includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/drop.zip'
               replaceExistingArchive: true
+
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-              ArtifactName: '$(artifactName)'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop.zip'
               publishLocation: 'Container'
 
   - stage: Deploy
@@ -61,16 +62,16 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: '$(artifactName)'
-              downloadPath: '$(System.ArtifactsDirectory)'
+          # - task: DownloadBuildArtifacts@0
+          #   inputs:
+          #     buildType: 'current'
+          #     downloadType: 'single'
+          #     artifactName: '$(artifactName)'
+          #     downloadPath: '$(System.ArtifactsDirectory)'
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
-              destinationFolder: '$(System.DefaultWorkingDirectory)/'
+              archiveFilePatterns: '$(System.DefaultWorkingDirectory)/drop.zip'
+              destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
               cleanDestinationFolder: true
               overwriteExistingFiles: false
           - task: AzureWebApp@1
@@ -79,4 +80,4 @@ stages:
               appType: 'webAppLinux'
               appName: wordpressdem
               resourceGroupName: rsne-demo
-              package: '$(System.DefaultWorkingDirectory)'
+              package: '$(System.DefaultWorkingDirectory)/extracted'
