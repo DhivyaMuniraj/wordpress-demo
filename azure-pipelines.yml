@@ -16,7 +16,7 @@ stages:
           - checkout: self
             fetchDepth: 0
           - script: |
-              echo "$cuurentenv"
+              echo "$currentenv"
               # changedFiles=$(git diff --name-status HEAD^ HEAD)
               # echo "$changedFiles"
               # if echo "$changedFiles" | grep -q "wp-content/themes/RSNE"; then
