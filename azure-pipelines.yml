@@ -25,70 +25,71 @@ stages:
             fetchDepth: 0
           - script: |
               changedFiles=$(git diff --name-status HEAD^ HEAD)
-              echo "$changedFiles"
-              if echo "$changedFiles" | grep -q "wp-content/themes/RSNE"; then
-                echo "##vso[task.setvariable variable=runNodeTask]true"
-                echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/RSNE"                
-                echo "Files in wp-content/themes/sample have been changed."
-              elif echo "$changedFiles" | grep -q "wp-content/themes/example"; then
-                echo "##vso[task.setvariable variable=runNodeTask]true"
-                echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/example"
-                echo "Files in wp-content/themes/example have been changed."
-              else
-                echo "##vso[task.setvariable variable=runNodeTask;isOutput=true]false"
-                echo "No changes in wp-content/."
-              fi
-          - task: NodeTool@0
-            condition: eq(variables.runNodeTask, 'True')
-            inputs:
-              versionSource: 'spec'
-              versionSpec: '20.x'
-          - script: |
-                  echo "$(themeDirectory)"
-                  cd $(themeDirectory)
-                  npm install
-                  npm run build
-            condition: eq(variables.runNodeTask, 'True')
-            displayName: 'npm install, build' 
-          - task: ArchiveFiles@2
-            inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)'
-              includeRootFolder: true
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-              replaceExistingArchive: true
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-              ArtifactName: 'drop'
-              publishLocation: 'Container'
+              echo "$variables.azureAppSub"
+  #             echo "$changedFiles"
+  #             if echo "$changedFiles" | grep -q "wp-content/themes/RSNE"; then
+  #               echo "##vso[task.setvariable variable=runNodeTask]true"
+  #               echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/RSNE"                
+  #               echo "Files in wp-content/themes/sample have been changed."
+  #             elif echo "$changedFiles" | grep -q "wp-content/themes/example"; then
+  #               echo "##vso[task.setvariable variable=runNodeTask]true"
+  #               echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/example"
+  #               echo "Files in wp-content/themes/example have been changed."
+  #             else
+  #               echo "##vso[task.setvariable variable=runNodeTask;isOutput=true]false"
+  #               echo "No changes in wp-content/."
+  #             fi
+  #         - task: NodeTool@0
+  #           condition: eq(variables.runNodeTask, 'True')
+  #           inputs:
+  #             versionSource: 'spec'
+  #             versionSpec: '20.x'
+  #         - script: |
+  #                 echo "$(themeDirectory)"
+  #                 cd $(themeDirectory)
+  #                 npm install
+  #                 npm run build
+  #           condition: eq(variables.runNodeTask, 'True')
+  #           displayName: 'npm install, build' 
+  #         - task: ArchiveFiles@2
+  #           inputs:
+  #             rootFolderOrFile: '$(Build.SourcesDirectory)'
+  #             includeRootFolder: true
+  #             archiveType: 'zip'
+  #             archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+  #             replaceExistingArchive: true
+  #         - task: PublishBuildArtifacts@1
+  #           inputs:
+  #             PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+  #             ArtifactName: 'drop'
+  #             publishLocation: 'Container'
 
-  - stage: Deploy
-    dependsOn: Build
-    condition: succeeded()
-    jobs:
-      - job: "Deploy"
-        steps:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'drop'
-              downloadPath: '$(System.ArtifactsDirectory)'
-          - task: ExtractFiles@1
-            inputs:
-              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
-              destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
-              cleanDestinationFolder: true
-              overwriteExistingFiles: false
-          # - script: |
-          #     mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
-          #     rmdir $(System.DefaultWorkingDirectory)/extracted/s
-          #   displayName: 'Move files from "s" folder'
-          - task: AzureWebApp@1
-            inputs:
-              azureSubscription: '${{variables.azureAppSub}}'
-              appType: 'webAppLinux'
-              appName: '${{variables.appName}}'
-              resourceGroupName: '${{variables.resourceGroupName}}'
-              package: '$(System.DefaultWorkingDirectory)/extracted/s'
+  # - stage: Deploy
+  #   dependsOn: Build
+  #   condition: succeeded()
+  #   jobs:
+  #     - job: "Deploy"
+  #       steps:
+  #         - task: DownloadBuildArtifacts@0
+  #           inputs:
+  #             buildType: 'current'
+  #             downloadType: 'single'
+  #             artifactName: 'drop'
+  #             downloadPath: '$(System.ArtifactsDirectory)'
+  #         - task: ExtractFiles@1
+  #           inputs:
+  #             archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
+  #             destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
+  #             cleanDestinationFolder: true
+  #             overwriteExistingFiles: false
+  #         # - script: |
+  #         #     mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
+  #         #     rmdir $(System.DefaultWorkingDirectory)/extracted/s
+  #         #   displayName: 'Move files from "s" folder'
+  #         - task: AzureWebApp@1
+  #           inputs:
+  #             azureSubscription: '${variables.azureAppSub}'
+  #             appType: 'webAppLinux'
+  #             appName: '${{variables.appName}}'
+  #             resourceGroupName: '${{variables.resourceGroupName}}'
+  #             package: '$(System.DefaultWorkingDirectory)/extracted/s'
