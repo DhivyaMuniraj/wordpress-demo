@@ -7,7 +7,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
- currentenv: $(Build.SourceBranchName)
+ currentenv: "$(Build.SourceBranchName)"
 stages:
   - stage: Build
     jobs:
@@ -16,7 +16,7 @@ stages:
           - checkout: self
             fetchDepth: 0
           - script: |
-              echo "$(Build.SourceBranchName)"
+              echo "$cuurentenv"
               # changedFiles=$(git diff --name-status HEAD^ HEAD)
               # echo "$changedFiles"
               # if echo "$changedFiles" | grep -q "wp-content/themes/RSNE"; then
