@@ -60,7 +60,7 @@ stages:
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-              ArtifactName: '$(artifactName)'
+              ArtifactName: 'drop'
               publishLocation: 'Container'
 
   - stage: Deploy
@@ -73,6 +73,7 @@ stages:
             inputs:
               buildType: 'current'
               downloadType: 'single'
+              artifactName: 'drop'
               downloadPath: '$(System.ArtifactsDirectory)'
           - task: ExtractFiles@1
             inputs:
