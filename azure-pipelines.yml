@@ -69,20 +69,25 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              downloadPath: '$(System.ArtifactsDirectory)'
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
               destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
               cleanDestinationFolder: true
               overwriteExistingFiles: false
-          - script: |
-              mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
-              rmdir $(System.DefaultWorkingDirectory)/extracted/s
-            displayName: 'Move files from "s" folder'
+          # - script: |
+          #     mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
+          #     rmdir $(System.DefaultWorkingDirectory)/extracted/s
+          #   displayName: 'Move files from "s" folder'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: '${{variables.azureAppSub}}'
               appType: 'webAppLinux'
               appName: '${{variables.appName}}'
               resourceGroupName: '${{variables.resourceGroupName}}'
-              package: '$(System.DefaultWorkingDirectory)/extracted'
+              package: '$(System.DefaultWorkingDirectory)/extracted/s'
