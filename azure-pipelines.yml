@@ -7,8 +7,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  artifactName: 'drop'
-
+ currentenv: $(Build.SourceBranchName)
 stages:
   - stage: Build
     jobs:
@@ -17,44 +16,45 @@ stages:
           - checkout: self
             fetchDepth: 0
           - script: |
-              changedFiles=$(git diff --name-status HEAD^ HEAD)
-              echo "$changedFiles"
-              if echo "$changedFiles" | grep -q "wp-content/themes/RSNE"; then
-                echo "##vso[task.setvariable variable=runNodeTask]true"
-                echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/RSNE"                
-                echo "Files in wp-content/themes/sample have been changed."
-              elif echo "$changedFiles" | grep -q "wp-content/themes/example"; then
-                echo "##vso[task.setvariable variable=runNodeTask]true"
-                echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/example"
-                echo "Files in wp-content/themes/example have been changed."
-              else
-                echo "##vso[task.setvariable variable=runNodeTask;isOutput=true]false"
-                echo "No changes in wp-content/."
-              fi
-          - task: NodeTool@0
-            condition: eq(variables.runNodeTask, 'True')
-            inputs:
-              versionSource: 'spec'
-              versionSpec: '20.x'
-          - script: |
-                  echo "$(themeDirectory)"
-                  cd $(themeDirectory)
-                  npm install
-                  npm run build
-            condition: eq(variables.runNodeTask, 'True')
-            displayName: 'npm install, build' 
-  #         - task: ArchiveFiles@2
-  #           inputs:
-  #             rootFolderOrFile: '$(Build.SourcesDirectory)'
-  #             includeRootFolder: true
-  #             archiveType: 'zip'
-  #             archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-  #             replaceExistingArchive: true
-  #         - task: PublishBuildArtifacts@1
-  #           inputs:
-  #             PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-  #             ArtifactName: '$(artifactName)'
-  #             publishLocation: 'Container'
+              echo "$currentenv"
+              # changedFiles=$(git diff --name-status HEAD^ HEAD)
+              # echo "$changedFiles"
+              # if echo "$changedFiles" | grep -q "wp-content/themes/RSNE"; then
+              #   echo "##vso[task.setvariable variable=runNodeTask]true"
+              #   echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/RSNE"                
+              #   echo "Files in wp-content/themes/sample have been changed."
+              # elif echo "$changedFiles" | grep -q "wp-content/themes/example"; then
+              #   echo "##vso[task.setvariable variable=runNodeTask]true"
+              #   echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/example"
+              #   echo "Files in wp-content/themes/example have been changed."
+              # else
+              #   echo "##vso[task.setvariable variable=runNodeTask;isOutput=true]false"
+              #   echo "No changes in wp-content/."
+              # fi
+          # - task: NodeTool@0
+          #   condition: eq(variables.runNodeTask, 'True')
+          #   inputs:
+          #     versionSource: 'spec'
+          #     versionSpec: '20.x'
+          # - script: |
+          #         echo "$(themeDirectory)"
+          #         cd $(themeDirectory)
+          #         npm install
+          #         npm run build
+          #   condition: eq(variables.runNodeTask, 'True')
+          #   displayName: 'npm install, build' 
+          # - task: ArchiveFiles@2
+          #   inputs:
+          #     rootFolderOrFile: '$(Build.SourcesDirectory)'
+          #     includeRootFolder: true
+          #     archiveType: 'zip'
+          #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+          #     replaceExistingArchive: true
+          # - task: PublishBuildArtifacts@1
+          #   inputs:
+          #     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          #     ArtifactName: '$(artifactName)'
+          #     publishLocation: 'Container'
 
   # - stage: Deploy
   #   dependsOn: Build
