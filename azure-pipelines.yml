@@ -5,17 +5,6 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
-
-variables:
-        - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
-            - group: 'main-variable-group'
-        - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/develop') }}:
-            - group: 'StagingVariables'
-        - ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/') }}:
-            - group: 'DevelopmentVariables'
-
-# variables:
-#  currentenv: "$(Build.SourceBranchName)"
 stages:
   - stage: Build
     jobs:
@@ -42,7 +31,7 @@ stages:
           - task: ArchiveFiles@2
             inputs:
               rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               replaceExistingArchive: true
