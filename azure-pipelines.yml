@@ -26,7 +26,7 @@ stages:
           - script: |
               ls
               # chmod +x ./scripts/detect_changes.sh
-              # ./scripts/detect_changes.sh
+              ./script/detect_changes.sh
               # changedFiles=$(git diff --name-status HEAD^ HEAD)
               # echo $(azureAppSub)
               # echo "$changedFiles"
