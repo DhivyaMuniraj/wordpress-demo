@@ -24,6 +24,7 @@ stages:
           - checkout: self
             fetchDepth: 0
           - script: |
+              chmod +x ./scripts/detect_changes.sh
               ./scripts/detect_changes.sh
               # changedFiles=$(git diff --name-status HEAD^ HEAD)
               # echo $(azureAppSub)
