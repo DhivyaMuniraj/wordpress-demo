@@ -51,7 +51,7 @@ stages:
           - task: DownloadBuildArtifacts@0
             inputs:
               artifactName: 'drop'
-              downloadPath: '$(Pipeline.Workspace)/drop'
+              downloadPath: '$(Pipeline.Workspace)'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: Sample
