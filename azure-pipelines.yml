@@ -27,21 +27,6 @@ stages:
               ls
               chmod +x ./script/detect_changes.sh
               ./script/detect_changes.sh
-              # changedFiles=$(git diff --name-status HEAD^ HEAD)
-              # echo $(azureAppSub)
-              # echo "$changedFiles"
-              # if echo "$changedFiles" | grep -q "wp-content/themes/sample"; then
-              #   echo "##vso[task.setvariable variable=runNodeTask]true"
-              #   echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/sample"                
-              #   echo "Files in wp-content/themes/sample have been changed."
-              # elif echo "$changedFiles" | grep -q "wp-content/themes/example"; then
-              #   echo "##vso[task.setvariable variable=runNodeTask]true"
-              #   echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/example"
-              #   echo "Files in wp-content/themes/example have been changed."
-              # else
-              #   echo "##vso[task.setvariable variable=runNodeTask;isOutput=true]false"
-              #   echo "No changes in wp-content/."
-              # fi
           - task: NodeTool@0
             condition: eq(variables.runNodeTask, 'True')
             inputs:
@@ -63,7 +48,7 @@ stages:
               replaceExistingArchive: true
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               publishLocation: 'Container'
 
   - stage: Deploy
@@ -72,28 +57,10 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'drop'
-              downloadPath: '$(System.ArtifactsDirectory)'
-          - task: ExtractFiles@1
-            inputs:
-              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
-              destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
-              cleanDestinationFolder: true
-              overwriteExistingFiles: false
-          - script: |
-                 ls
-                 echo "$(azureAppSub)"
-  #         #     mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
-  #         #     rmdir $(System.DefaultWorkingDirectory)/extracted/s
-          #   displayName: 'Move files from "s" folder'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: Sample
               appType: 'webAppLinux'
               appName: $(appName)
               resourceGroupName: $(resourceGroupName)
-              package: '$(System.DefaultWorkingDirectory)/extracted/s'
+              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
