@@ -56,7 +56,7 @@ stages:
             displayName: 'npm install, build' 
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)'
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
               includeRootFolder: true
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
@@ -66,34 +66,34 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               publishLocation: 'Container'
 
-  - stage: Deploy
-    dependsOn: Build
-    condition: succeeded()
-    jobs:
-      - job: "Deploy"
-        steps:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              # artifactName: 'drop'
-              downloadPath: '$(System.ArtifactsDirectory)'
-          - task: ExtractFiles@1
-            inputs:
-              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
-              destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
-              cleanDestinationFolder: true
-              overwriteExistingFiles: false
-          - script: |
-                 ls
-                 echo $(azureAppSub)
-          #     mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
-          #     rmdir $(System.DefaultWorkingDirectory)/extracted/s
-          #   displayName: 'Move files from "s" folder'
-          # - task: AzureWebApp@1
-          #   inputs:
-          #     azureSubscription: '$(azureAppSub)'
-          #     appType: 'webAppLinux'
-          #     appName: $(appName)
-          #     resourceGroupName: $(resourceGroupName)
-          #     package: '$(System.DefaultWorkingDirectory)/extracted/s'
+  # - stage: Deploy
+  #   dependsOn: Build
+  #   condition: succeeded()
+  #   jobs:
+  #     - job: "Deploy"
+  #       steps:
+  #         - task: DownloadBuildArtifacts@0
+  #           inputs:
+  #             buildType: 'current'
+  #             downloadType: 'single'
+  #             # artifactName: 'drop'
+  #             downloadPath: '$(System.ArtifactsDirectory)'
+  #         - task: ExtractFiles@1
+  #           inputs:
+  #             archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
+  #             destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
+  #             cleanDestinationFolder: true
+  #             overwriteExistingFiles: false
+  #         - script: |
+  #                ls
+  #                echo $(azureAppSub)
+  #         #     mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
+  #         #     rmdir $(System.DefaultWorkingDirectory)/extracted/s
+  #         #   displayName: 'Move files from "s" folder'
+  #         # - task: AzureWebApp@1
+  #         #   inputs:
+  #         #     azureSubscription: '$(azureAppSub)'
+  #         #     appType: 'webAppLinux'
+  #         #     appName: $(appName)
+  #         #     resourceGroupName: $(resourceGroupName)
+  #         #     package: '$(System.DefaultWorkingDirectory)/extracted/s'
