@@ -47,52 +47,53 @@ stages:
             inputs:
               versionSource: 'spec'
               versionSpec: '20.x'
-  #         - script: |
-  #                 echo "$(themeDirectory)"
-  #                 cd $(themeDirectory)
-  #                 npm install
-  #                 npm run build
-  #           condition: eq(variables.runNodeTask, 'True')
-  #           displayName: 'npm install, build' 
-  #         - task: ArchiveFiles@2
-  #           inputs:
-  #             rootFolderOrFile: '$(Build.SourcesDirectory)'
-  #             includeRootFolder: true
-  #             archiveType: 'zip'
-  #             archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-  #             replaceExistingArchive: true
-  #         - task: PublishBuildArtifacts@1
-  #           inputs:
-  #             PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-  #             ArtifactName: 'drop'
-  #             publishLocation: 'Container'
+          - script: |
+                  echo "$(themeDirectory)"
+                  cd $(themeDirectory)
+                  npm install
+                  npm run build
+            condition: eq(variables.runNodeTask, 'True')
+            displayName: 'npm install, build' 
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              replaceExistingArchive: true
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              publishLocation: 'Container'
 
-  # - stage: Deploy
-  #   dependsOn: Build
-  #   condition: succeeded()
-  #   jobs:
-  #     - job: "Deploy"
-  #       steps:
-  #         - task: DownloadBuildArtifacts@0
-  #           inputs:
-  #             buildType: 'current'
-  #             downloadType: 'single'
-  #             artifactName: 'drop'
-  #             downloadPath: '$(System.ArtifactsDirectory)'
-  #         - task: ExtractFiles@1
-  #           inputs:
-  #             archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
-  #             destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
-  #             cleanDestinationFolder: true
-  #             overwriteExistingFiles: false
-  #         # - script: |
-  #         #     mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
-  #         #     rmdir $(System.DefaultWorkingDirectory)/extracted/s
-  #         #   displayName: 'Move files from "s" folder'
-  #         - task: AzureWebApp@1
-  #           inputs:
-  #             azureSubscription: '${variables.azureAppSub}'
-  #             appType: 'webAppLinux'
-  #             appName: '${{variables.appName}}'
-  #             resourceGroupName: '${{variables.resourceGroupName}}'
-  #             package: '$(System.DefaultWorkingDirectory)/extracted/s'
+  - stage: Deploy
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: "Deploy"
+        steps:
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              # artifactName: 'drop'
+              downloadPath: '$(System.ArtifactsDirectory)'
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
+              destinationFolder: '$(System.DefaultWorkingDirectory)/extracted'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: false
+          - script: |
+                 ls
+                 echo $(azureAppSub)
+          #     mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
+          #     rmdir $(System.DefaultWorkingDirectory)/extracted/s
+          #   displayName: 'Move files from "s" folder'
+          # - task: AzureWebApp@1
+          #   inputs:
+          #     azureSubscription: '$(azureAppSub)'
+          #     appType: 'webAppLinux'
+          #     appName: $(appName)
+          #     resourceGroupName: $(resourceGroupName)
+          #     package: '$(System.DefaultWorkingDirectory)/extracted/s'
