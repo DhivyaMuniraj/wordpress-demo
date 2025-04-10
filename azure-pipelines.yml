@@ -86,14 +86,14 @@ stages:
               overwriteExistingFiles: false
           - script: |
                  ls
-                 echo $(azureAppSub)
+                 echo "$(azureAppSub)"
   #         #     mv $(System.DefaultWorkingDirectory)/extracted/s/* $(System.DefaultWorkingDirectory)/extracted/
   #         #     rmdir $(System.DefaultWorkingDirectory)/extracted/s
-  #         #   displayName: 'Move files from "s" folder'
-  #         # - task: AzureWebApp@1
-  #         #   inputs:
-  #         #     azureSubscription: '$(azureAppSub)'
-  #         #     appType: 'webAppLinux'
-  #         #     appName: $(appName)
-  #         #     resourceGroupName: $(resourceGroupName)
-  #         #     package: '$(System.DefaultWorkingDirectory)/extracted/s'
+          #   displayName: 'Move files from "s" folder'
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: Sample
+              appType: 'webAppLinux'
+              appName: $(appName)
+              resourceGroupName: $(resourceGroupName)
+              package: '$(System.DefaultWorkingDirectory)/extracted/s'
