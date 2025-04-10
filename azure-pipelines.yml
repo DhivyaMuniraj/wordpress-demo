@@ -24,21 +24,22 @@ stages:
           - checkout: self
             fetchDepth: 0
           - script: |
-              changedFiles=$(git diff --name-status HEAD^ HEAD)
-              echo $(azureAppSub)
-  #             echo "$changedFiles"
-  #             if echo "$changedFiles" | grep -q "wp-content/themes/RSNE"; then
-  #               echo "##vso[task.setvariable variable=runNodeTask]true"
-  #               echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/RSNE"                
-  #               echo "Files in wp-content/themes/sample have been changed."
-  #             elif echo "$changedFiles" | grep -q "wp-content/themes/example"; then
-  #               echo "##vso[task.setvariable variable=runNodeTask]true"
-  #               echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/example"
-  #               echo "Files in wp-content/themes/example have been changed."
-  #             else
-  #               echo "##vso[task.setvariable variable=runNodeTask;isOutput=true]false"
-  #               echo "No changes in wp-content/."
-  #             fi
+              ./scripts/detect_changes.sh
+              # changedFiles=$(git diff --name-status HEAD^ HEAD)
+              # echo $(azureAppSub)
+              # echo "$changedFiles"
+              # if echo "$changedFiles" | grep -q "wp-content/themes/sample"; then
+              #   echo "##vso[task.setvariable variable=runNodeTask]true"
+              #   echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/sample"                
+              #   echo "Files in wp-content/themes/sample have been changed."
+              # elif echo "$changedFiles" | grep -q "wp-content/themes/example"; then
+              #   echo "##vso[task.setvariable variable=runNodeTask]true"
+              #   echo "##vso[task.setvariable variable=themeDirectory]wp-content/themes/example"
+              #   echo "Files in wp-content/themes/example have been changed."
+              # else
+              #   echo "##vso[task.setvariable variable=runNodeTask;isOutput=true]false"
+              #   echo "No changes in wp-content/."
+              # fi
   #         - task: NodeTool@0
   #           condition: eq(variables.runNodeTask, 'True')
   #           inputs:
