@@ -1,14 +1,15 @@
 trigger:
   branches:
     include:
-      - main
+      - dev
 
 pool:
   vmImage: ubuntu-latest
+
 stages:
   - stage: Build
     jobs:
-      - job: "DetectChanges"
+      - job: "Build"
         steps:
           - checkout: self
             fetchDepth: 0
@@ -40,22 +41,64 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               publishLocation: 'Container'
 
-  - stage: Deploy
+  - stage: Deploy_Development
     dependsOn: Build
     condition: succeeded()
     jobs:
-      - job: "Deploy"
+      - job: "Deploy_Development"
         steps:
-          - task: DownloadBuildArtifacts@1
+          - task: DownloadBuildArtifacts@0
             inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'drop'
-              downloadPath: '$(System.ArtifactsDirectory)'
+              artifactName: 'archive'
+              downloadPath: '$(Pipeline.Workspace)/drop'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: Sample
               appType: 'webAppLinux'
-              appName: $(appName)
-              resourceGroupName: $(resourceGroupName)
-              package: '$(System.ArtifactsDirectory)/drop/$(Build.BuildId).zip'
+              appName: $(devAppName)
+              resourceGroupName: $(devResourceGroupName)
+              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+
+  # - stage: Deploy_QA
+  #   dependsOn: Deploy_Development
+  #   condition: succeeded()
+  #   jobs:
+  #     - deployment: Deploy_QA
+  #       environment: 'QA'
+  #       strategy:
+  #         runOnce:
+  #           deploy:
+  #             steps:
+  #               - task: DownloadBuildArtifacts@0
+  #                 inputs:
+  #                   artifactName: 'archive'
+  #                   downloadPath: '$(Pipeline.Workspace)/drop'
+  #               - task: AzureWebApp@1
+  #                 inputs:
+  #                   azureSubscription: Sample
+  #                   appType: 'webAppLinux'
+  #                   appName: $(qaAppName)
+  #                   resourceGroupName: $(qaResourceGroupName)
+  #                   package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+
+  # - stage: Deploy_Production
+  #   dependsOn: Deploy_QA
+  #   condition: succeeded()
+  #   jobs:
+  #     - deployment: Deploy_Production
+  #       environment: 'Production'
+  #       strategy:
+  #         runOnce:
+  #           deploy:
+  #             steps:
+  #               - task: DownloadBuildArtifacts@0
+  #                 inputs:
+  #                   artifactName: 'archive'
+  #                   downloadPath: '$(Pipeline.Workspace)/drop'
+  #               - task: AzureWebApp@1
+  #                 inputs:
+  #                   azureSubscription: Sample
+  #                   appType: 'webAppLinux'
+  #                   appName: $(prodAppName)
+  #                   resourceGroupName: $(prodResourceGroupName)
+  #                   package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
