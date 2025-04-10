@@ -46,10 +46,16 @@ stages:
     jobs:
       - job: "Deploy"
         steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'drop'
+              downloadPath: '$(System.ArtifactsDirectory)'
           - task: AzureWebApp@1
             inputs:
               azureSubscription: Sample
               appType: 'webAppLinux'
               appName: $(appName)
               resourceGroupName: $(resourceGroupName)
-              package: '$(System.DefaultWorkingDirectory)/drop/$(Build.BuildId).zip'
+              package: '$(System.ArtifactsDirectory)/drop/$(Build.BuildId).zip'
