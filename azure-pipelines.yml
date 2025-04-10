@@ -63,4 +63,4 @@ stages:
               appType: 'webAppLinux'
               appName: $(appName)
               resourceGroupName: $(resourceGroupName)
-              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
