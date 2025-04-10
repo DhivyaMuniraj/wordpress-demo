@@ -1,4 +1,4 @@
-# BEGIN W3TC Browser Cache
+# BEGIN W3TC Browser Cachee
 <IfModule mod_mime.c>
     AddType text/css .css
     AddType text/x-component .htc
