@@ -40,6 +40,7 @@ stages:
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               publishLocation: 'Container'
+              ArtifactName: 'drop'
 
   - stage: Deploy_Development
     dependsOn: Build
@@ -49,7 +50,7 @@ stages:
         steps:
           - task: DownloadBuildArtifacts@0
             inputs:
-              artifactName: 'archive'
+              artifactName: 'drop'
               downloadPath: '$(Pipeline.Workspace)/drop'
           - task: AzureWebApp@1
             inputs:
